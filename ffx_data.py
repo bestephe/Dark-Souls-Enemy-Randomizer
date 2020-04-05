@@ -185,7 +185,7 @@ class FFXData():
         tempList = []
         self.ffx_files.clear()
         for iFile in inputFiles:
-            openFileName = 'sfx\\FRPG_SfxBnd_' + iFile + '.ffxbnd'
+            openFileName = os.path.join('sfx', 'FRPG_SfxBnd_' + iFile + '.ffxbnd')
             if (useDCX):
                 openFileName += '.dcx'
             with open(openFileName, 'rb') as f:
@@ -231,7 +231,7 @@ class FFXData():
         ffxEntries = []
         tpfEntries = []
         mdlEntries = []
-        openFileName = 'sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd'
+        openFileName = os.path.join('sfx', 'FRPG_SfxBnd_CommonEffects.ffxbnd')
         if (useDCX):
             openFileName += '.dcx'
 
@@ -298,11 +298,11 @@ class FFXData():
             if (useDCX):
                 print("[FFX] Saving and recompressing sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd.dcx. This takes quite a while with the Remaster.")
                 dcxh = DCXHandler()
-                temp = dcxh.open_file('sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd.dcx')
-                dcxh.save_dcx('sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd.dcx', bnd_rebuilder.repack_bnd(newContent))
+                temp = dcxh.open_file(os.path.join('sfx', 'FRPG_SfxBnd_CommonEffects.ffxbnd.dcx'))
+                dcxh.save_dcx(os.path.join('sfx', 'FRPG_SfxBnd_CommonEffects.ffxbnd.dcx'), bnd_rebuilder.repack_bnd(newContent))
             else:
                 print("[FFX] Saving sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd.")
-                with open('sfx\\FRPG_SfxBnd_CommonEffects.ffxbnd', 'wb') as f:
+                with open(os.path.join('sfx', 'FRPG_SfxBnd_CommonEffects.ffxbnd'), 'wb') as f:
                     f.write(bnd_rebuilder.repack_bnd(newContent))
 
             newCheckSum = sha256_checksum(openFileName)
@@ -315,13 +315,13 @@ class FFXData():
         if not useDCX:
             for iFile in inputFiles:
                 data = []
-                with open('sfx\\FRPG_SfxBnd_' + iFile + '.ffxbnd', 'rb') as f:
+                with open(os.path.join('sfx', 'FRPG_SfxBnd_' + iFile + '.ffxbnd'), 'rb') as f:
                     content = f.read()
                     data = bnd_rebuilder.unpack_bnd(content)
-                    if not (os.path.isfile('sfx\\FRPG_SfxBnd_' + iFile + '.ffxbnd.bak')):
-                        with open('sfx\\FRPG_SfxBnd_' + iFile + '.ffxbnd.bak', 'wb') as bakf:
+                    if not (os.path.isfile(os.path.join('sfx', 'FRPG_SfxBnd_' + iFile + '.ffxbnd.bak'))):
+                        with open(os.path.join('sfx', 'FRPG_SfxBnd_' + iFile + '.ffxbnd.bak'), 'wb') as bakf:
                             bakf.write(content)
-                with open('sfx\\FRPG_SfxBnd_' + iFile + '.ffxbnd', 'wb') as sf:
+                with open(os.path.join('sfx', 'FRPG_SfxBnd_' + iFile + '.ffxbnd'), 'wb') as sf:
                     sf.write(bnd_rebuilder.repack_bnd(data[:1]))
 
             print('[FFX] Clean-up complete')

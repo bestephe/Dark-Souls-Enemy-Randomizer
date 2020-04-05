@@ -141,10 +141,12 @@ class MainWindow():
 
     def __init__(self):
         self.root = Tk()
-        self.randomizerVersion = "v0.4.1.2"
-        self.root.title("Dark Souls - Enemy randomizer " + self.randomizerVersion + " by rycheNhavalys")
+        self.randomizerVersion = "v0.4.1.2-per-map-rando"
+        self.root.title("Dark Souls - Enemy randomizer " + self.randomizerVersion + " by rycheNhavalys (with features by DrBeardsly)")
 
-        self.root.iconbitmap(default=resource_path('favicon.ico'))
+        #self.root.iconbitmap(default=resource_path('favicon.ico'))
+        #icon = PhotoImage(file=resource_path('favicon.png'))
+        #self.root.tk.call('wm', 'iconphoto', self.root._w, icon)
 
         self.randomizer = Randomizer()
 
@@ -199,11 +201,13 @@ class MainWindow():
 
         self.msg_area.tag_config("sellout_text", foreground="gray10")
         self.msg_area.tag_config("sellout_link", foreground="DeepPink2", underline=1)   # link to streamlabs sellout page
+        self.msg_area.tag_config("beard_link", foreground="DeepPink2", underline=1)   # link to streamlabs sellout page
         self.msg_area.tag_config("major_error", foreground="red")                       # error messages
 
         self.msg_area.tag_bind("sellout_link", "<Enter>", lambda _: self.msg_area.config(cursor="hand2"))
         self.msg_area.tag_bind("sellout_link", "<Leave>", lambda _: self.msg_area.config(cursor=""))
         self.msg_area.tag_bind("sellout_link", "<Button-1>", lambda _: webbrowser.open_new_tab("https://streamlabs.com/rychenhavalys"))
+        self.msg_area.tag_bind("beard_link", "<Button-1>", lambda _: webbrowser.open_new_tab("https://twitch.tv/drbeardsly"))
 
         self.sellout_button = Button(self.root, text="$$", foreground="DeepPink3", command=self.OpenSelloutPage)
         self.sellout_button.grid(row=1, column=0, sticky="NWS", padx=6, pady=4)
@@ -686,8 +690,9 @@ class MainWindow():
             self.msg_area.delete(1.0, END)
             self.msg_area.insert(END,  "\n\n If you wish to support the mod author via a donation, you can do so here:\n\n ", "sellout_text")
             self.msg_area.insert(END,  "https://streamlabs.com/rychenhavalys", "sellout_link")
-            self.msg_area.insert(END,  "\n\n Donations are not required, but they are appreciated.\n\n\n\n", "sellout_text")
-            self.msg_area.insert(END,  " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \"That wasn't necessary of you, but you have my thanks\" - Eileen the Crow\n\n", "uf")
+            self.msg_area.insert(END,  "\n\n Donations are not required, but they are appreciated.\n\n", "sellout_text")
+            self.msg_area.insert(END,  " https://twitch.tv/drbeardsly", "beard_link")
+            self.msg_area.insert(END,  " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \"That wasn't necessary of you, but you have my thanks\" - Eileen the Crow\n\n", "uf")
             self.msg_area.config(state = "disabled")
         else:
             # Normal message area

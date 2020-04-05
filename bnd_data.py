@@ -95,7 +95,7 @@ class BndData():
         Adds <scriptName>.lua to currently opened .luabnd file.
         """
         if not (scriptName == ""):
-            with open('enemyRandomizerData\\aiscripts\\' + scriptName, 'rb') as aif:
+            with open(os.path.join('enemyRandomizerData', 'aiscripts', scriptName), 'rb') as aif:
                 data = aif.read()
                 self.add(scriptName, data)
 
