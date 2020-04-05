@@ -1,5 +1,5 @@
 ------------------------------------
-Dark Souls Enemy Randomizer v0.4.1.2
+Dark Souls Enemy Randomizer v0.4.9.9-beard
 ------------------------------------
 
 --Installation Instructions [PTDE]:
