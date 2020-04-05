@@ -163,6 +163,9 @@ class MainWindow():
         self.settingsPage3 = ttk.Frame(self.settingsTabs)
         self.settingsTabs.add(self.settingsPage3, text='Even More Options')
 
+        self.settingsPage4 = ttk.Frame(self.settingsTabs)
+        self.settingsTabs.add(self.settingsPage4, text='Map Options')
+
         self.buttons_frame = LabelFrame(self.root, text="Randomization")
         self.buttons_frame.grid(row=4, column=4, sticky='NWES', padx=2)
         self.buttons_frame.columnconfigure(0, weight=1)
@@ -274,6 +277,12 @@ class MainWindow():
         self.mosquitoReplacement = IntVar()
         self.mosquitoReplacement.set(1)
 
+        self.mapOptionsEnabled = IntVar()
+        self.mapOptionsEnabled.set(0)
+        self.mapOptionsOutputList = [IntVar() for i in range(len(Randomizer.inputFiles))]
+        for iv in self.mapOptionsOutputList:
+            iv.set(0)
+
         self.seedValue = StringVar()
         self.seedValue.set("")
 
@@ -297,6 +306,8 @@ class MainWindow():
         self.settingsPage3.columnconfigure(2, weight=1)
         self.settingsPage3.columnconfigure(1, weight=1)
         self.settingsPage3.columnconfigure(0, weight=1)
+
+        self.settingsPage4.columnconfigure(0, weight=1)
 
         # Seed entry
 
@@ -625,6 +636,25 @@ class MainWindow():
         self.BindTags(self.mosquitoBtn2, 17, 0)
 
         self.isSelloutActive = False
+
+        # Map Options
+
+        self.map_options_frame = LabelFrame(self.settingsPage4,
+            text="Output Map Options: ")
+        self.map_options_frame.grid(row=0, column=0, sticky='NWES', padx=2)
+
+        self.map_options_enabled_frame = LabelFrame(self.settingsPage4, text="Enable Selective Randomization: ")
+        self.map_options_enabled_frame.grid(row=0, column=2, sticky='NWES', padx=2)
+        
+        self.mapOptionsEnabledBtn1 = Radiobutton(self.map_options_enabled_frame, text="Enabled", variable=self.mapOptionsEnabled, value=1, command=self.UpdateMessageArea)
+        self.mapOptionsEnabledBtn1.pack(anchor=W)
+        self.mapOptionsEnabledBtn2 = Radiobutton(self.map_options_enabled_frame, text="Disabled", variable=self.mapOptionsEnabled, value=0, command=self.UpdateMessageArea)
+        self.mapOptionsEnabledBtn2.pack(anchor=W)
+
+        self.mapOptionsOutputButtons = []
+        for i in range(len(Randomizer.inputFiles)):
+            self.mapOptionsOutputButtons.append(Checkbutton(self.map_options_frame, text=Randomizer.names[i], variable=self.mapOptionsOutputList[i], command=self.UpdateMessageArea))
+            self.mapOptionsOutputButtons[i].pack(anchor=W)
 
         if (self.randomizer.canRandomize):
             if (self.randomizer.exeStatus == "Unknown"):
@@ -1025,8 +1055,27 @@ class MainWindow():
         self.BuildConfigString()
 
         self.SaveCurrentConfigAsDefault()
+
+        #XXX: This should just be a NamedTuple and json/yaml, but a class makes
+        # this helpful for less code modification
+        class RandomSettings():
+            def __init__(self, *old_args):
+                self.old_args = old_args
         
-        randomSettings = (self.progressBar, self.progressLabel, self.randomizerVersion, self.bossReplaceMode.get(), self.enemyReplaceMode.get(), self.npcMode.get(), self.mimicMode.get(), self.fitMode.get(), self.difficultyMode.get(), self.replace_chance_slider.get(), self.boss_chance_slider.get(), self.boss_chance_slider_bosses.get(), self.gargoyleMode.get(), self.diffStrictness.get(), self.tposeCity.get(), self.boss_souls_slider.get(), self.pinwheelChaos.get(), self.typeReplacement.get(), self.gwynNerf.get(), self.preventSame.get(), self.uniqueBosses.get(), self.respawingBosses.get(), self.hostileNPCs.get(), self.mosquitoReplacement.get(), self.seedValue.get(), self.configString, self.enemyConfigForRandomization.get())
+        # Old settings
+        randomSettings = RandomSettings(self.progressBar, self.progressLabel, self.randomizerVersion, self.bossReplaceMode.get(), self.enemyReplaceMode.get(), self.npcMode.get(), self.mimicMode.get(), self.fitMode.get(), self.difficultyMode.get(), self.replace_chance_slider.get(), self.boss_chance_slider.get(), self.boss_chance_slider_bosses.get(), self.gargoyleMode.get(), self.diffStrictness.get(), self.tposeCity.get(), self.boss_souls_slider.get(), self.pinwheelChaos.get(), self.typeReplacement.get(), self.gwynNerf.get(), self.preventSame.get(), self.uniqueBosses.get(), self.respawingBosses.get(), self.hostileNPCs.get(), self.mosquitoReplacement.get(), self.seedValue.get(), self.configString, self.enemyConfigForRandomization.get())
+
+        # New setting (Map Options)
+        randomSettings.mapOutputEnable = self.mapOptionsEnabled.get()
+        randomSettings.mapOutputIntList = [iv.get() for iv in self.mapOptionsOutputList]
+        included_maps = []
+        for iv, m in zip(randomSettings.mapOutputIntList, Randomizer.inputFiles):
+            if iv:
+                included_maps.append(m)
+        randomSettings.mapOutputSet = set(included_maps)
+        print('mapOutputIntList: {}'.format(randomSettings.mapOutputIntList))
+        print('mapOutputSet: {}'.format(randomSettings.mapOutputSet))
+
 
         self.randThread = randomizationThread(1, "Random-Thread", 1, self.randomizer, randomSettings, self.msg_area, self, timeString)
         self.randThread.start()
@@ -1692,7 +1741,6 @@ class MainWindow():
         self.randomizer.revertToNormal(revertEffects)
         tkinter.messagebox.showinfo("De-Randomization complete", "Enemies reverted to normal")
 
-        
 
 mw = MainWindow()
 mw.root.mainloop()

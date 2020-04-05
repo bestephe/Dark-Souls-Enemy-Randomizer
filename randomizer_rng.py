@@ -1265,7 +1265,7 @@ class Randomizer:
 
         if (self.check()):
             # Get settings
-            progressBar, progressLabel, versionString, bossMode, enemyMode, npcMode, mimicMode, fitMode, diffMode, replaceChance, bossChance, bossChanceBosses, gargoyleMode, diffStrictness, tposeCity, bossSoulDrops, chaosPinwheel, typeReplacement, gwynNerf, preventSame, uniqueBosses, respawningBosses, hostileNPC, mosquitoReplacement, seed, textConfig, enemyConfigName = settings
+            progressBar, progressLabel, versionString, bossMode, enemyMode, npcMode, mimicMode, fitMode, diffMode, replaceChance, bossChance, bossChanceBosses, gargoyleMode, diffStrictness, tposeCity, bossSoulDrops, chaosPinwheel, typeReplacement, gwynNerf, preventSame, uniqueBosses, respawningBosses, hostileNPC, mosquitoReplacement, seed, textConfig, enemyConfigName = settings.old_args
 
             self.gwynNerfMode = gwynNerf
             self.disallowSameReplacement = (preventSame == 0)
@@ -1372,6 +1372,11 @@ class Randomizer:
 
                 progressBar.step()
                 progressLabel.config(text="Randomizing " + self.names[i])
+
+                if settings.mapOutputEnable and inFile not in settings.mapOutputSet:
+                    printLog("Skipping {} - {} ({})".format(inFile, self.names[i], str(self.MAX_UNIQUE)), logFile)
+                    i += 1
+                    continue
 
                 self.createBackup(self.MAPSTUDIO + inFile + ".msb")
                 self.msbio.open(self.MAPCOPY + inFile + ".msb")
@@ -2080,3 +2085,6 @@ class Randomizer:
             tkinter.messagebox.showerror("Enemy copy error", "Required files not found. \nCheck log rlog" + timeString + ".txt for details")
 
         logFile.close()
+
+assert(len(Randomizer.inputFiles) == len(Randomizer.names))
+assert(len(Randomizer.inputFilesAll) == len(Randomizer.namesAll))
