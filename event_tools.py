@@ -52,6 +52,7 @@ class EventTools:
         eh.import_dkscript('enemyRandomizerData/eventTemplates.dkscript')
 
         self.templates = eh.events
+        print('Templates len: {}'.format(len(self.templates)))
 
         self.currentDisableRespawnEventID = 0
         self.disableRespawnEventIndex = 0

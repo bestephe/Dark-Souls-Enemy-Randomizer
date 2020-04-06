@@ -19,7 +19,9 @@ Run the command:
 
 ## Building an EXE
 
-TODO
+TODO: Discuss how to build my custom pyinstaller-windows image!
+
+`sudo docker run -v "$(pwd):/src/" drbeardsly/pyinstaller-windows`
 
 ## Scratch
 

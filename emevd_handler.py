@@ -401,6 +401,10 @@ class EmevdHandler():
                                 self.events.append(ce)
                                 ce = None
 
+        #XXX: DEBUG
+        for i, event in enumerate(self.events):
+            print('Event[{}]: Id: {}'.format(i, event.eventId))
+
         for event in self.events:
             event.parse_event_init_args(eventParamMap, True)
 
